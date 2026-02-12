@@ -12,7 +12,6 @@ public class HttpListener
     private readonly Dictionary<string, MethodInfo> _actions;
     private readonly Dictionary<string, Type> _parameterTypes;
     private readonly IServiceProvider _serviceProvider;
-    private readonly Type _type;
     
     public HttpListener(IServiceProvider serviceProvider)
     {
