@@ -12,7 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure\Dto\" />
+      <Folder Include="Infrastructure\Dto\ResponseBase\" />
+      <Folder Include="UserManagement\Dto\Response\" />
     </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 using NetStructre.Applications.UserManagement.Abstract;
+using NetStructre.Infrastructure.ExectionHandling;
 using NetStructre.UserManagement.Dto.Request;
 
 namespace NetStructre;
@@ -65,43 +66,59 @@ public class HttpListener
     
     private async Task HttpRequestReceived(HttpContext context)
     {
-        // if (!await CheckHttpHeaders(context))
-        // {
-        //     return; 
-        // } 
-        //
-        // var result = await pendingRequest.Task;
-        //
-        // context.Response.Headers.Append("Content-Type", "application/json");
-        // context.Response.StatusCode = result.StatusCode;
-        // await context.Response.WriteAsync(result.Response);
-
-        var actionName = "test";
-        
-        if (context.Request.Headers["Action"].Count != 0)
+        try
         {
-            actionName = context.Request.Headers["Action"];
+            // if (!await CheckHttpHeaders(context))
+            // {
+            //     return; 
+            // } 
+            //
+            // var result = await pendingRequest.Task;
+            //
+            // context.Response.Headers.Append("Content-Type", "application/json");
+            // context.Response.StatusCode = result.StatusCode;
+            // await context.Response.WriteAsync(result.Response);
+
+            var actionName = "test";
+            var response = "";
+            if (context.Request.Headers["Action"].Count != 0)
+            {
+                actionName = context.Request.Headers["Action"];
+            }
+        
+            //var request = JsonSerializer.Deserialize<SignInRequest>(context.Request.Body);
+        
+            if (_actions.TryGetValue(actionName!, out var actionMethod) && _parameterTypes.TryGetValue(actionName!, out var paramType))
+            {
+                var dtoRequest = paramType.Name != "RequestBase" ? await JsonSerializer.DeserializeAsync(context.Request.Body, paramType) : null;
+            
+                var serviceType = actionMethod.DeclaringType!;
+
+                var service = _serviceProvider.GetRequiredService(serviceType);
+
+                var responseObj = actionMethod.Invoke(service, [dtoRequest])!;
+
+                response = await (Task<string>)(responseObj);
+            
+                Console.WriteLine(response);
+            }
+
+            context.Response.Headers.Append("Content-Type", "application/json");
+            context.Response.StatusCode = 200;
+            await context.Response.WriteAsync(response);
         }
-        
-        //var request = JsonSerializer.Deserialize<SignInRequest>(context.Request.Body);
-        
-        if (_actions.TryGetValue(actionName!, out var actionMethod) && _parameterTypes.TryGetValue(actionName!, out var paramType))
+        catch (ServiceException exception)
         {
-            var dtoRequest = paramType.Name != "RequestBase" ? await JsonSerializer.DeserializeAsync(context.Request.Body, paramType) : null;
-            
-            var serviceType = actionMethod.DeclaringType!;
-
-            var service = _serviceProvider.GetRequiredService(serviceType);
-
-            var responseObj = actionMethod.Invoke(service, [dtoRequest])!;
-
-            var response = await (Task<string>)(responseObj);
-            
-            Console.WriteLine(response);
+            context.Response.Headers.Append("Content-Type", "application/json");
+            context.Response.StatusCode = (int)exception.StatusCode;
+            await context.Response.WriteAsync(exception.Description);
+        }
+        catch (Exception exception)
+        {
+            context.Response.Headers.Append("Content-Type", "application/json");
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync(exception.ToString());
         }
 
-        context.Response.Headers.Append("Content-Type", "application/json");
-        context.Response.StatusCode = 200;
-        await context.Response.WriteAsync("Successful");
     }
 }
