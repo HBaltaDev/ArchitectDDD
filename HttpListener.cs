@@ -28,9 +28,6 @@ public class HttpListener
             .Where(t => typeof(IApplicationService).IsAssignableFrom(t) && t.IsInterface)
             .SelectMany(t => t.GetMethods())
             .Where(m => m.ReturnType == typeof(Task<ResponseBase>));
-
-        
-        // Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         foreach (var method in methods)
         {
@@ -69,25 +66,12 @@ public class HttpListener
     {
         try
         {
-            // if (!await CheckHttpHeaders(context))
-            // {
-            //     return; 
-            // } 
-            //
-            // var result = await pendingRequest.Task;
-            //
-            // context.Response.Headers.Append("Content-Type", "application/json");
-            // context.Response.StatusCode = result.StatusCode;
-            // await context.Response.WriteAsync(result.Response);
-
             var actionName = "test";
             var response = "";
             if (context.Request.Headers["Action"].Count != 0)
             {
                 actionName = context.Request.Headers["Action"];
             }
-        
-            //var request = JsonSerializer.Deserialize<SignInRequest>(context.Request.Body);
         
             if (_actions.TryGetValue(actionName!, out var actionMethod) && _parameterTypes.TryGetValue(actionName!, out var paramType))
             {
@@ -118,6 +102,5 @@ public class HttpListener
             context.Response.StatusCode = 500;
             await context.Response.WriteAsync(exception.ToString());
         }
-
     }
 }
