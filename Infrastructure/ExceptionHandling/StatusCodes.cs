@@ -1,4 +1,4 @@
-namespace NetStructre.Infrastructure.ExectionHandling;
+namespace Server.Infrastructure.ExectionHandling;
 
 public enum StatusCodes
 {

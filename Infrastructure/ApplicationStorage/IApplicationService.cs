@@ -1,4 +1,4 @@
-namespace NetStructre;
+namespace Server;
 
 public interface IApplicationService
 {

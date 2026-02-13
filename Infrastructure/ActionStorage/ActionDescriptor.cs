@@ -1,4 +1,4 @@
-namespace NetStructre;
+namespace Server;
 
 public sealed record ActionDescriptor(
     bool AuditLogRequired,

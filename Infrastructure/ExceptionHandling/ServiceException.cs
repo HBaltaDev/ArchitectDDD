@@ -1,13 +1,13 @@
-namespace NetStructre.Infrastructure.ExectionHandling;
+using Server.Infrastructure.ExectionHandling;
+using Server.Infrastructure.ExectionHandling.ErrorMessage;
+using Server.Infrastructure.ExectionHandling.Localization;
 
-public class ServiceException : Exception
-{
-    public StatusCodes StatusCode { get; set; }
-    public string Description { get; set; }
+namespace Infrastructure.ExceptionHandling;
 
-    public ServiceException(StatusCodes statusCode, string description, string? errorMessage = null) : base(errorMessage ?? string.Empty)
-    {
-        StatusCode = statusCode;
-        Description = description;
-    }
-}
+public class ServiceException(Error error, string? language = null) : Exception
+{ 
+     private static IErrorLocalizer? _localizer;
+     public static void Configure(IErrorLocalizer localizer) => _localizer = localizer;
+     public StatusCodes StatusCode { get; } = error.StatusCode;
+     public string Description { get; } = _localizer!.GetDescription(error.Description, language ?? "en");
+} 

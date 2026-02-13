@@ -1,4 +1,4 @@
-namespace NetStructre;
+namespace Server;
 
 public static class ActionConfig
 {

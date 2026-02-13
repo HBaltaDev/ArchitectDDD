@@ -1,4 +1,4 @@
-namespace NetStructre.Infrastructure.Dto.RequestBase;
+namespace Infrastructure.DtoBase.RequestBase;
 
 public record RequestBase
 {

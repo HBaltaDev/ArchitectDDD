@@ -1,4 +1,4 @@
-namespace NetStructre.Infrastructure.DtoBase.ResponseBase;
+namespace Infrastructure.DtoBase.ResponseBase;
 
 public record ResponseBase
 {
