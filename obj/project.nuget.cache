@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UDa8VU+2X2A=",
+  "dgSpecHash": "xLJDJe2dqO4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Administrator\\RiderProjects\\NetStructre\\NetStructure\\NetStructure.csproj",
+  "projectFilePath": "C:\\Users\\Administrator\\RiderProjects\\NetStructre\\Server\\Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.2\\microsoft.aspnetcore.openapi.10.0.2.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
