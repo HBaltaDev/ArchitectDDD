@@ -1,6 +1,7 @@
 using Infrastructure.Dto.Request;
 using Infrastructure.DtoBase.ResponseBase;
 using Infrastructure.ExceptionHandling;
+using Microsoft.AspNetCore.Identity.Data;
 using Server.Applications.UserManagement.Abstract;
 using Server.Infrastructure.ExectionHandling.ErrorMessage;
 using Server.Infrastructure.ExectionHandling.Localization;
@@ -16,14 +17,21 @@ public class UserManagementService(IUserService userService, IDtoAssembler dtoAs
         //throw new ServiceException(StatusCodes.ALREADY_EXISTS, "Test");
         //throw new ServiceException(ErrorDefinitions.UserNotFound);
         
-        var result = await userService.SignIn(request.Email, request.Password);
+        var result = await userService.SignInAsync(request.Email, request.Password);
         
         return dtoAssembler.ToSignInResponse(result);
+    }
+
+    public async Task<ResponseBase> SignUpAsync(SignUpRequest request)
+    {
+        await userService.SignUpAsync(request.Name, request.Surname, request.EmailAddress, request.PhoneNumber, request.Password);
+
+        return dtoAssembler.BuildVoidResponse();
     }
     
     public async Task<ResponseBase> GetUserAsync(CommonIdRequest request)
     {
-        var user = await userService.GetUser(request.Id);
+        var user = await userService.GetUserAsync(request.Id);
 
         return dtoAssembler.ToGetUserResponse(user);
     }

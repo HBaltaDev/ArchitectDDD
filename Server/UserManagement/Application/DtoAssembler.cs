@@ -1,3 +1,4 @@
+using Infrastructure.Dto.Response;
 using Server.Applications.UserManagement.Abstract;
 using Server.UserManagement.Domain;
 using Server.UserManagement.Domain.User;
@@ -7,6 +8,11 @@ namespace Server.Applications.UserManagement;
 
 public class DtoAssembler : IDtoAssembler
 {
+    public VoidResponse BuildVoidResponse()
+    {
+        return new VoidResponse();
+    }
+    
     public SignInResponse ToSignInResponse(string email)
     {
         return new SignInResponse { Email = email };
@@ -22,10 +28,10 @@ public class DtoAssembler : IDtoAssembler
             Surname = user.Surname,
             EmailAddress = user.EmailAddress,
             PhoneNumber = user.PhoneNumber,
-            IsTfaActive = user.IsTfaActive,
-            TfaType = user.TfaType.HasValue ? (int)user.TfaType.Value : null,
+            IsTfaActive = user.IsTFAActive,
+            TfaType = user.TFAType.HasValue ? (int)user.TFAType.Value : null,
             RoleIdList = user.RoleIdList,
-            PasswordExpireDuration = user.PasswordExpireDuration,
+            PasswordExpiration = user.PasswordExpiration,
             RecordInfo = user.RecordInfo
         };
     }

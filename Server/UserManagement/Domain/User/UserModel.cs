@@ -23,17 +23,17 @@ public class UserModel : ModelBase
 
     public string? LastThirdPassword { get; set; }
 
-    public TfaType? TfaType { get; set; }
+    public TfaType? TFAType { get; set; }
     
-    public bool? IsTfaActive { get; set; }
+    public bool? IsTFAActive { get; set; }
     
-    public string? TfaSecret { get; set; }
+    public string? TFASecret { get; set; }
 
     public int[] RoleIdList { get; set; }
 
     public DateTime? PasswordChangedDate { get; set; }
 
-    public byte PasswordExpireDuration { get; set; }
+    public byte PasswordExpiration { get; set; }
 
     public bool IsOneTimePassword { get; set; }
 

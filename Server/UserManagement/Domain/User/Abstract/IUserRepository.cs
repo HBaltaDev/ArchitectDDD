@@ -2,5 +2,7 @@ namespace Server.UserManagement.Domain.Abstract;
 
 public interface IUserRepository
 {
-    public Task<UserModel?> GetById(long id);
+    public Task<ulong> InsertAsync(UserModel user);
+    
+    public Task<UserModel?> GetByIdAsync(long id);
 }

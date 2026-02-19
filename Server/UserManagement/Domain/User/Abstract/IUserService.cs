@@ -2,8 +2,10 @@ namespace Server.UserManagement.Domain.Abstract;
 
 public interface IUserService
 {
-    Task<string> SignIn(string email, string password);
+    Task<string> SignInAsync(string email, string password);
     Task SignOut();
 
-    public Task<UserModel> GetUser(long id);
+    public Task<UserModel> GetUserAsync(long id);
+    
+    public Task SignUpAsync(string name, string surname, string email, string phoneNumber, string password);
 }

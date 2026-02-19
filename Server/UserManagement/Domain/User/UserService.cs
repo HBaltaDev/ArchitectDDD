@@ -6,7 +6,7 @@ namespace Server.UserManagement.Domain;
 
 public class UserService(IUserRepository userRepository, IUserFactory userFactory) : IUserService
 {
-    public async Task<string> SignIn(string email, string password)
+    public async Task<string> SignInAsync(string email, string password)
     {
         if (email == "hbalta" && password == "12345")
         {
@@ -21,10 +21,17 @@ public class UserService(IUserRepository userRepository, IUserFactory userFactor
         throw new NotImplementedException();
     }
 
-    public async Task<UserModel> GetUser(long id)
+    public async Task<UserModel> GetUserAsync(long id)
     {
-        var user = await userRepository.GetById(id);
+        var user = await userRepository.GetByIdAsync(id);
 
         return user ?? throw new ServiceException(ErrorDefinitions.UserNotFound);
+    }
+
+    public async Task SignUpAsync(string name, string surname, string email, string phoneNumber, string password)
+    {
+        var user = userFactory.GenerateUserModelSignUpToDB( name, surname, email, phoneNumber, password);
+        
+        await userRepository.InsertAsync(user);
     }
 }

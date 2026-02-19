@@ -23,7 +23,7 @@ public record GetUserResponse : ResponseBase
 
     public int[]? RoleIdList { get; set; }
 
-    public byte PasswordExpireDuration { get; set; }
+    public byte PasswordExpiration { get; set; }
     
     public RecordInfo? RecordInfo { get; set; }
 }

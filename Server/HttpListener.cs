@@ -29,6 +29,8 @@ public class HttpListener
         
         using var scope = _serviceProvider.CreateScope();
         
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        
         var methods = Assembly.GetExecutingAssembly()
             .GetTypes()
             .Where(t => typeof(IApplicationService).IsAssignableFrom(t) && t.IsInterface)
@@ -133,14 +135,14 @@ public class HttpListener
             
             context.Response.Headers.Append("Content-Type", "application/json");
             context.Response.StatusCode = (int)ErrorDefinitions.SystemError.StatusCode;
-            Console.WriteLine(exception.Message);
+            Console.WriteLine(exception);
             await context.Response.WriteAsync(_errorLocalizer.GetDescription(ErrorDefinitions.SystemError.Description, "en"));
         }
     }
     
     private static void AddSqlMapperHandlerTypes()
     {
-        var assemblies = new[] { Assembly.GetExecutingAssembly() };
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
         var allDerivedTypes = assemblies
             .SelectMany(assembly => assembly.GetTypes())
