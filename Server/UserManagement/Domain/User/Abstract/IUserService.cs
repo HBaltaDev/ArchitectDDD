@@ -4,4 +4,6 @@ public interface IUserService
 {
     Task<string> SignIn(string email, string password);
     Task SignOut();
+
+    public Task<UserModel> GetUser(long id);
 }

@@ -1,8 +1,10 @@
+using Infrastructure.ExceptionHandling;
+using Server.Infrastructure.ExectionHandling.ErrorMessage;
 using Server.UserManagement.Domain.Abstract;
 
-namespace Server.UserManagement.Domain.User;
+namespace Server.UserManagement.Domain;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository, IUserFactory userFactory) : IUserService
 {
     public async Task<string> SignIn(string email, string password)
     {
@@ -17,5 +19,12 @@ public class UserService : IUserService
     public Task SignOut()
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<UserModel> GetUser(long id)
+    {
+        var user = await userRepository.GetById(id);
+
+        return user ?? throw new ServiceException(ErrorDefinitions.UserNotFound);
     }
 }

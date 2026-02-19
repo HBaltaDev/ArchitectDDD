@@ -1,8 +1,9 @@
 using Server.Applications.UserManagement;
 using Server.Applications.UserManagement.Abstract;
 using Server.UserManagement.Domain.Abstract;
-using Server.UserManagement.Domain.User;
 using Server.UserManagement.Application;
+using Server.UserManagement.Domain;
+using Server.UserManagement.Domain.User;
 
 namespace Server.UserManagement.DI;
 
@@ -14,6 +15,8 @@ public static class DIService
         services.AddScoped<IDtoAssembler, DtoAssembler>();
         
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserFactory, UserFactory>();
 
         return services;
     }

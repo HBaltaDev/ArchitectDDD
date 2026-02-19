@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using Dapper;
 using Infrastructure.DbContext;
 using Infrastructure.DtoBase.ResponseBase;
 using Infrastructure.ExceptionHandling;
@@ -39,12 +40,12 @@ public class HttpListener
             _actions.Add(method.Name, method);
             _parameterTypes.Add(method.Name, method.GetParameters().FirstOrDefault()?.ParameterType);
         }
+
+        AddSqlMapperHandlerTypes();
     }
 
     public void Start()
     {
-        Console.WriteLine("Starting HttpListener");
-        
         var builder = WebApplication.CreateBuilder();
 
         builder.Services.AddCors(options =>
@@ -134,6 +135,39 @@ public class HttpListener
             context.Response.StatusCode = (int)ErrorDefinitions.SystemError.StatusCode;
             Console.WriteLine(exception.Message);
             await context.Response.WriteAsync(_errorLocalizer.GetDescription(ErrorDefinitions.SystemError.Description, "en"));
+        }
+    }
+    
+    private static void AddSqlMapperHandlerTypes()
+    {
+        var assemblies = new[] { Assembly.GetExecutingAssembly() };
+
+        var allDerivedTypes = assemblies
+            .SelectMany(assembly => assembly.GetTypes())
+            .Where(t =>
+                t is { IsClass: true, IsAbstract: false, BaseType.IsGenericType: true } &&
+                t.BaseType.GetGenericTypeDefinition() == typeof(SqlMapper.TypeHandler<>))
+            .ToList();
+        
+        foreach (var derivedType in allDerivedTypes)
+        {
+            if (Activator.CreateInstance(derivedType) is SqlMapper.ITypeHandler instance)
+            {
+                var genericArgumentType = derivedType.BaseType!.GenericTypeArguments.FirstOrDefault();
+
+                if (genericArgumentType != null)
+                {
+                    var method = typeof(SqlMapper).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                        .FirstOrDefault(m => m is { Name: "AddTypeHandler", IsGenericMethod: true });
+
+                    if (method != null)
+                    {
+                        var genericMethod = method.MakeGenericMethod(genericArgumentType);
+
+                        genericMethod.Invoke(null, [instance]);
+                    }
+                }
+            }
         }
     }
 }
